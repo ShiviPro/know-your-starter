@@ -1,1 +1,8 @@
+.pokemon__name {
+  margin: 10px 0;
+}
 
+.poke__info {
+  width: 400px;
+  height: 200px;
+}
