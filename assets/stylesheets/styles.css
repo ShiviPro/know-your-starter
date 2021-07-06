@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .pokemon__name {
   margin: 10px 0;
 }
@@ -5,4 +10,23 @@
 .poke__info {
   width: 400px;
   height: 200px;
+}
+
+.poke-suggestions {
+  display: none;
+  background-color: bisque;
+  width: 10em;
+  border: 0.75px solid black;
+  border-bottom: none;
+}
+
+.poke-suggestion__card {
+  margin: 0;
+  padding: 20px 0;
+  text-align: center;
+  border-bottom: 0.75px solid black;
+}
+
+.show {
+  display: block !important;
 }

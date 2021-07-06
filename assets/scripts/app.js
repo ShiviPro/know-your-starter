@@ -1,42 +1,51 @@
-import * as pokeData from "../data/pokedata";
 const pokeInput = document.querySelector("#pokemon__name");
 
-const pokeOutput = document.querySelector("#poke__info");
+const pokeSuggestions = document.querySelector("#poke-suggestions");
 
-const url = "https://pokeapi.co/api/v2/pokemon";
+// const pokeOutput = document.querySelector("#poke__info");
 
-const pokeImg = document.querySelector("#pokemon__img");
+const getPokeIndexUrl = "https://pokeapi.co/api/v2/pokemon";
 
-var pokemonDetails;
+// const pokeImg = document.querySelector("#pokemon__img");
 
-function processPokeIndex(jsonOutput) {
-  pokemonDetails = jsonOutput;
+const getAllPokeNamesUrl = "https://pokeapi.co/api/v2/pokemon?limit=1118";
 
-  console.log(pokemonDetails);
-  let pokemonIndex = pokemonDetails.id;
+const imgPath =
+  "./node_modules/pokemon-sprites/sprites/pokemon/other/official-artwork";
 
-  const imgPath =
-    "./node_modules/pokemon-sprites/sprites/pokemon/other/official-artwork/" +
-    pokemonIndex +
-    ".png";
+async function suggestPokeNames(event) {
+  const pokeNameData = await fetch(getAllPokeNamesUrl);
+  const pokeDataJson = await pokeNameData.json();
+  const pokeNameDataJson = await pokeDataJson.results;
 
-  pokeImg.setAttribute("src", imgPath);
-}
+  let pokeNameSuggestions = pokeNameDataJson.filter((pokeName) => {
+    const regEx = new RegExp(`^${pokeInput.value}`, "gi");
+    return pokeName.name.match(regEx);
+  });
 
-function handleAPIErrors(error) {
-  pokeImg.setAttribute("alt", "Image not found");
-}
-
-const getPokeIndex = function (e) {
-  if (e.which === 13) {
-    pokeImg.setAttribute("src", "");
-    fetch(url + "/" + pokeInput.value.toLowerCase())
-      .then((output) => output.json())
-      .then(processPokeIndex)
-      .catch(handleAPIErrors);
+  if (pokeInput.value === "") {
+    pokeNameSuggestions = [];
+    pokeSuggestions.innerHTML = "";
   }
-};
 
-console.log(pokeData);
+  // if (pokeNameSuggestions === []) {
+  //   pokeSuggestions.innerHTML = "";
+  // }
 
-pokeInput.addEventListener("keydown", getPokeIndex);
+  const searchSuggestionsHTML = pokeNameSuggestions
+    .map((pokeName) => {
+      return `
+      <div class="poke-suggestion__card">
+        <p>${pokeName.name}</p>
+      </div>
+      `;
+    })
+    .join();
+
+  if (pokeNameSuggestions.length > 0) {
+    pokeSuggestions.classList.add("show");
+    pokeSuggestions.innerHTML = searchSuggestionsHTML;
+  }
+}
+
+pokeInput.addEventListener("input", suggestPokeNames);
