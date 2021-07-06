@@ -13,11 +13,17 @@ const getAllPokeNamesUrl = "https://pokeapi.co/api/v2/pokemon?limit=1118";
 const imgPath =
   "./node_modules/pokemon-sprites/sprites/pokemon/other/official-artwork";
 
-async function suggestPokeNames(event) {
+var pokeNameDataJson;
+
+async function getAllPokemonNames() {
   const pokeNameData = await fetch(getAllPokeNamesUrl);
   const pokeDataJson = await pokeNameData.json();
-  const pokeNameDataJson = await pokeDataJson.results;
+  pokeNameDataJson = await pokeDataJson.results;
+}
 
+getAllPokemonNames();
+
+function suggestPokeNames(event) {
   let pokeNameSuggestions = pokeNameDataJson.filter((pokeName) => {
     const regEx = new RegExp(`^${pokeInput.value}`, "gi");
     return pokeName.name.match(regEx);
