@@ -92,7 +92,11 @@ const pokeTypeAccent = [
   "water",
 ];
 
-const noOfPokemons = 150;
+// const noOfPokemons = 150;
+const pokeIndices = [
+  1, 4, 7, 152, 155, 158, 252, 255, 258, 387, 390, 393, 495, 498, 501, 650, 653,
+  656, 722, 725, 728, 810, 813, 816, 25, 133,
+];
 
 const pokeInfoUrl = "https://pokeapi.co/api/v2/pokemon";
 
@@ -100,8 +104,8 @@ const pokeImgUrl =
   "./node_modules/pokemon-sprites/sprites/pokemon/other/official-artwork";
 
 const fetchPokemons = async () => {
-  for (let pokeIndex = 1; pokeIndex <= noOfPokemons; pokeIndex++) {
-    await getPokeInfo(pokeIndex);
+  for (let pokeIndex = 0; pokeIndex < pokeIndices.length; pokeIndex++) {
+    await getPokeInfo(pokeIndices[pokeIndex]);
   }
 };
 
