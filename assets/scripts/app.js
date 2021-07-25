@@ -100,11 +100,20 @@ const pokeIndices = [
 
 const pokeInfoUrl = "https://pokeapi.co/api/v2/pokemon";
 
+let currGen = 1;
+let isNextGen = true;
+
 const pokeImgUrl =
   "./node_modules/pokemon-sprites/sprites/pokemon/other/official-artwork";
 
 const fetchPokemons = async () => {
   for (let pokeIndex = 0; pokeIndex < pokeIndices.length; pokeIndex++) {
+    if (currGen <= 8 && pokeIndex % 3 == 0) {
+      isNextGen = true;
+    } else if (pokeIndex == 24) {
+      currGen = 7;
+      isNextGen = true;
+    }
     await getPokeInfo(pokeIndices[pokeIndex]);
   }
 };
@@ -142,6 +151,14 @@ const createPokeTile = (pokeInfo) => {
       <h3 class="poke-name">${pokeName}</h3>
       </div>
       `;
+
+  if (isNextGen) {
+    let genInfo = document.createElement("div");
+    genInfo.innerHTML = `<span class="gen-info">Generation ${currGen}<span>`;
+    pokemons_container.appendChild(genInfo);
+    currGen += 1;
+    isNextGen = false;
+  }
 
   pokemons_container.appendChild(pokemonTile);
   let pokeInfoContainer = document.querySelector(

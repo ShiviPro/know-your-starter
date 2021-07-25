@@ -40,11 +40,25 @@
   --water: #9db7f5;
   --water-dark: #445e9c;
   --white: #dff9fb;
+  --off-white: #bdc3c7;
+  --black: #2c3e50;
 }
 body {
   margin: 0;
   padding: 0;
+  color: var(--black);
   font-family: "pokeFont";
+  background: #70e1f5; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #ffd194,
+    #70e1f5
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #ffd194,
+    #70e1f5
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 /* .pokemon__name {
@@ -79,7 +93,7 @@ body {
   width: 70%;
   margin: 20px auto;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 0.5fr 1fr 1fr 1fr;
   column-gap: 20px;
   row-gap: 20px;
 }
@@ -221,4 +235,74 @@ body {
 
 .poke-type {
   padding: 3px;
+}
+.list-unordered--inline {
+  display: inline;
+  padding-left: 0;
+}
+
+.list-unordered--inline__item {
+  display: inline;
+  margin-right: 3vw;
+}
+.navbar {
+  padding: 5vh 2vw;
+  display: grid;
+  grid-column-gap: 5vw;
+  grid-template-columns: 1fr 1fr;
+}
+
+.navbar__brand-name {
+  font-size: 3rem;
+  font-weight: 700;
+  transition: all 0.5s;
+}
+.navbar__brand-name:hover {
+  transform: scale(1.1) translate(2vw);
+}
+
+.navbar__links {
+  justify-self: right;
+}
+
+.navbar__link {
+  padding: 10px 1vw;
+  text-decoration: none;
+  font-size: 2rem;
+  color: var(--black);
+  opacity: 80%;
+  font-weight: 500;
+  transition: all 0.5s;
+}
+
+.navbar__link::selection {
+  opacity: 90%;
+}
+
+.navbar__link:hover {
+  opacity: 90%;
+  border-top: 1px solid var(--black);
+  border-right: 10px solid var(--black);
+  border-bottom: 10px solid var(--black);
+  border-left: 1px solid var(--black);
+}
+
+hr {
+  width: 95%;
+  border-color: var(--black);
+}
+
+.heading-primary {
+  padding: 5vh 2vw;
+  font-size: 1.7rem;
+}
+
+.gen-info {
+  font-size: 1.7rem;
+  display: inline-block;
+  margin: 50% 0;
+}
+
+.poke-index {
+  opacity: 60%;
 }
