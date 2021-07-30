@@ -306,3 +306,129 @@ hr {
 .poke-index {
   opacity: 60%;
 }
+
+.div--floating {
+  min-width: 65%;
+  min-height: auto;
+  position: absolute;
+  top: 50vh;
+  left: 10vw;
+  right: 10vw;
+  z-index: 1;
+  background-color: var(--white);
+  border-radius: 20px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  font-size: 1.5rem;
+}
+
+.poke-tile:hover {
+  cursor: pointer;
+  opacity: 70%;
+}
+
+.poke-ability {
+  cursor: pointer;
+}
+
+.div--floating__img {
+  width: 300px;
+  height: 300px;
+  border: 5px solid var(--black);
+  border-radius: 50%;
+}
+
+.div--floating__intro {
+  margin: auto 0;
+}
+
+.poke-stats {
+  margin-left: 20px;
+}
+
+.div--floating__types,
+.div--floating__weak2x-types,
+.div--floating__weak_half_x-types,
+.div--floating__weak0x-types,
+.div--floating__strong2x-types,
+.div--floating__strong_half_x-types,
+.div--floating__strong0x-types {
+  margin: auto 0;
+}
+
+.out-of-focus {
+  opacity: 50%;
+}
+
+.back-in-focus {
+  opacity: 100%;
+}
+
+.div--floating-close-btn {
+  padding: 0;
+  background: inherit;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.div--floating-close-btn:hover {
+  border: 2px solid var(--black);
+}
+
+.div--floating-close-img {
+  width: 50px;
+  height: 50px;
+  fill: var(--black);
+}
+
+.div--floating-back-btn {
+  padding: 5px;
+  background: inherit;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.div--floating-back-btn:hover {
+  border: 2px solid var(--black);
+  border-radius: 50%;
+}
+
+.div--floating-back-img {
+  width: 25px;
+  height: 25px;
+  fill: var(--black);
+}
+
+.div--floating__ability-info {
+  background-color: var(--off-white);
+  position: absolute;
+  top: 520px;
+  left: 10px;
+  z-index: 1;
+  max-width: 40%;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.div--floating__ability-info::after {
+  content: " ";
+  position: absolute;
+  top: -30px;
+  left: var(--left-val, 20%);
+  margin-left: -15px;
+  border: 15px solid;
+  border-color: transparent transparent var(--off-white) transparent;
+}
+
+footer {
+  text-align: center;
+}
