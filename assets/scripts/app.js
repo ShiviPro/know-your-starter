@@ -92,40 +92,10 @@ const pokeTypeAccent = [
   "water",
 ];
 
-// const noOfPokemons = 150;
 const pokeIndices = [
   1, 4, 7, 152, 155, 158, 252, 255, 258, 387, 390, 393, 495, 498, 501, 650, 653,
   656, 722, 725, 728, 810, 813, 816, 25, 133,
 ];
-
-// const pokeImgExt = [
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".png",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".svg",
-//   ".png",
-//   ".png",
-//   ".png",
-//   ".png",
-//   ".png",
-//   ".png",
-//   ".png",
-//   ".png",
-//   ".png",
-// ];
 
 const pokeInfoUrl = "https://pokeapi.co/api/v2/pokemon";
 
@@ -133,6 +103,9 @@ let currGen = 1;
 let isNextGen = true;
 
 const pokeImgUrl = "./assets/images/starterMons/";
+
+let loading = document.createElement("div");
+loading.classList.add("loading");
 
 const fetchPokemons = async () => {
   for (let pokeIndex = 0; pokeIndex < pokeIndices.length; pokeIndex++) {
@@ -142,6 +115,7 @@ const fetchPokemons = async () => {
       currGen = 7;
       isNextGen = true;
     }
+    pokemons_container.appendChild(loading);
     await getPokeInfo(pokeIndices[pokeIndex]);
   }
 };
@@ -175,16 +149,16 @@ const createPokeTile = (pokeInfo) => {
 
   if (pokeInfo.id == 133 || pokeInfo.id >= 650) {
     pokemonTile.innerHTML = `
-      <div class="poke-image-container" data-poke-index="${pokeInfo.id}">
+        <div class="poke-image-container" data-poke-index="${pokeInfo.id}">
         <img class="poke-image" src="${pokeImgUrl}${pokeInfo.id}.png"  data-poke-index="${pokeInfo.id}"/>
-      </div>`;
+        </div>`;
   } else {
     pokemonTile.innerHTML = `
-      <div class="poke-image-container" data-poke-index="${pokeInfo.id}">
+        <div class="poke-image-container" data-poke-index="${pokeInfo.id}">
         <svg class="poke-image" data-poke-index="${pokeInfo.id}">
-          <use xlink:href="#mon-${pokeInfo.id}-img">
+        <use xlink:href="#mon-${pokeInfo.id}-img">
         </svg>
-      </div>`;
+        </div>`;
   }
 
   pokemonTile.innerHTML += `
@@ -192,9 +166,9 @@ const createPokeTile = (pokeInfo) => {
       <h3 class="poke-index" data-poke-index="${pokeInfo.id}">#${pokeInfo.id
     .toString()
     .padStart(3, "0")}</h3>
-      <h3 class="poke-name" data-poke-index="${pokeInfo.id}">${pokeName}</h3>
-      </div>
-      `;
+        <h3 class="poke-name" data-poke-index="${pokeInfo.id}">${pokeName}</h3>
+        </div>
+        `;
 
   if (isNextGen) {
     let genInfo = document.createElement("div");
@@ -216,12 +190,47 @@ const createPokeTile = (pokeInfo) => {
       type
     ].type.name.toUpperCase()}</span></h3>`;
   }
+  loading.remove();
 
   pokemons_container.appendChild(pokemonTile);
 };
 
+const addFocusOnHoveredPokeTile = () => {
+  let allPokeTiles = document.querySelectorAll(".poke-tile");
+  for (
+    let eachPokeTile = 0;
+    eachPokeTile < allPokeTiles.length;
+    eachPokeTile++
+  ) {
+    allPokeTiles[eachPokeTile].addEventListener("mouseover", () => {
+      for (
+        let remainingTile = 0;
+        remainingTile < allPokeTiles.length;
+        remainingTile++
+      ) {
+        if (remainingTile != eachPokeTile) {
+          allPokeTiles[remainingTile].classList.add("fadeAway");
+        }
+      }
+    });
+    allPokeTiles[eachPokeTile].addEventListener("mouseout", () => {
+      for (
+        let remainingTile = 0;
+        remainingTile < allPokeTiles.length;
+        remainingTile++
+      ) {
+        if (remainingTile != eachPokeTile) {
+          allPokeTiles[remainingTile].classList.remove("fadeAway");
+        }
+      }
+    });
+  }
+};
+
 const runMain = async () => {
   await fetchPokemons();
+  let lastUserLocOnYAxis = undefined;
+  addFocusOnHoveredPokeTile();
   await addBehaviourToPokeTiles();
 };
 
@@ -239,6 +248,10 @@ const addBehaviourToPokeTiles = () => {
     let floatingArea = document.createElement("DIV");
     floatingArea.classList.add("div--floating");
     floatingArea.setAttribute("id", "div--floating");
+
+    loading.classList.add("comeInCenter");
+    event.target.appendChild(loading);
+
     let pokeInfo = await fetch(
       pokeInfoUrl + "/" + event.target.dataset.pokeIndex
     );
@@ -296,7 +309,6 @@ const addBehaviourToPokeTiles = () => {
           }
         }
       abilityStr += `<span class="poke-ability" data-ability-info="${abilityInfoFetch}">${abilityEl.ability.name}</span>`;
-      // abilityStr += `<span class="poke-ability">${abilityEl.ability.name}</span>`;
       if (abilityIdx != abilities.length - 1) {
         abilityStr += ",&nbsp;";
       }
@@ -350,6 +362,8 @@ const addBehaviourToPokeTiles = () => {
       <p class="poke-stats">Speed: ${pokeStats[5].base_stat}</p>
     </div>
     `;
+    loading.classList.remove("comeInCenter");
+    loading.remove();
 
     document.body.appendChild(floatingArea);
 
@@ -513,6 +527,10 @@ const addBehaviourToPokeTiles = () => {
       .querySelector("#div--floating__strong0x-types")
       .appendChild(floatingAreaTypes);
 
+    lastUserLocOnYAxis = window.pageYOffset;
+
+    window.scrollTo(0, 450);
+
     let closeBtn = document.createElement("div");
     closeBtn.innerHTML = `<button class="div--floating-close-btn"><img class="div--floating-close-img" src="./assets/images/close.svg" alt="close-btn-img" /></button>`;
     document.querySelector("#div--floating").appendChild(closeBtn);
@@ -522,6 +540,8 @@ const addBehaviourToPokeTiles = () => {
       document
         .querySelector(".primary-content")
         .classList.remove("out-of-focus");
+
+      window.scrollTo(0, lastUserLocOnYAxis);
     });
 
     const addBehaviourToPokeAbilities = () => {
