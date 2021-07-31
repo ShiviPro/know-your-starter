@@ -8,7 +8,5 @@
   },
   "author": "Shivam Tewari",
   "license": "ISC",
-  "dependencies": {
-    "pokemon-sprites": "github:PokeAPI/sprites"
-  }
+  "dependencies": {}
 }

@@ -98,13 +98,41 @@ const pokeIndices = [
   656, 722, 725, 728, 810, 813, 816, 25, 133,
 ];
 
+// const pokeImgExt = [
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".png",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".svg",
+//   ".png",
+//   ".png",
+//   ".png",
+//   ".png",
+//   ".png",
+//   ".png",
+//   ".png",
+//   ".png",
+//   ".png",
+// ];
+
 const pokeInfoUrl = "https://pokeapi.co/api/v2/pokemon";
 
 let currGen = 1;
 let isNextGen = true;
 
-const pokeImgUrl =
-  "./node_modules/pokemon-sprites/sprites/pokemon/other/official-artwork";
+const pokeImgUrl = "./assets/images/starterMons/";
 
 const fetchPokemons = async () => {
   for (let pokeIndex = 0; pokeIndex < pokeIndices.length; pokeIndex++) {
@@ -145,13 +173,22 @@ const createPokeTile = (pokeInfo) => {
   pokemonTile.id = "poke-tile";
   pokemonTile.setAttribute("data-poke-index", `${pokeInfo.id}`);
 
-  pokemonTile.innerHTML = `
+  if (pokeInfo.id == 133 || pokeInfo.id >= 650) {
+    pokemonTile.innerHTML = `
       <div class="poke-image-container" data-poke-index="${pokeInfo.id}">
-      <img class="poke-image" src="${pokeImgUrl}/${
-    pokeInfo.id
-  }.png"  data-poke-index="${pokeInfo.id}"/>
-      </div>
-      <div class="poke-info-container data-poke-index="${pokeInfo.id}"">
+        <img class="poke-image" src="${pokeImgUrl}${pokeInfo.id}.png"  data-poke-index="${pokeInfo.id}"/>
+      </div>`;
+  } else {
+    pokemonTile.innerHTML = `
+      <div class="poke-image-container" data-poke-index="${pokeInfo.id}">
+        <svg class="poke-image" data-poke-index="${pokeInfo.id}">
+          <use xlink:href="#mon-${pokeInfo.id}-img">
+        </svg>
+      </div>`;
+  }
+
+  pokemonTile.innerHTML += `
+      <div class="poke-info-container" data-poke-index="${pokeInfo.id}">
       <h3 class="poke-index" data-poke-index="${pokeInfo.id}">#${pokeInfo.id
     .toString()
     .padStart(3, "0")}</h3>
@@ -266,11 +303,19 @@ const addBehaviourToPokeTiles = () => {
     }
 
     let pokeStats = await pokeInfo.stats;
-
-    floatingArea.innerHTML = `
-    <img src="${
-      pokeImgUrl + "/" + event.target.dataset.pokeIndex + ".png"
-    }" class="div--floating__img"/>`;
+    if (pokeInfo.id == 133 || pokeInfo.id >= 650) {
+      floatingArea.innerHTML = `
+        <div class="poke-image-container">
+          <img class="div--floating__img" src="${pokeImgUrl}${event.target.dataset.pokeIndex}.png"/>
+        </div>`;
+    } else {
+      floatingArea.innerHTML = `
+        <div class="poke-image-container">
+          <svg class="div--floating__img">
+            <use xlink:href="#mon-${event.target.dataset.pokeIndex}-img">
+          </svg>
+        </div>`;
+    }
 
     let pokeIntroData = await fetch(
       "https://pokeapi.co/api/v2/pokemon-species/" +
