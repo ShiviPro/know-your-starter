@@ -470,6 +470,11 @@ const addBehaviourToPokeTiles = () => {
         .querySelector(".primary-content")
         .classList.remove("out-of-focus");
 
+      document.querySelectorAll(".poke-tile").forEach((pokeTile) => {
+        if (pokeTile.classList.contains("fadeAway"))
+          pokeTile.classList.remove("fadeAway");
+      });
+
       window.scrollTo(0, lastUserLocOnYAxis);
     });
 
