@@ -279,15 +279,7 @@ body {
   padding: 3px;
   cursor: initial;
 }
-.list-unordered--inline {
-  display: inline;
-  padding-left: 0;
-}
 
-.list-unordered--inline__item {
-  display: inline;
-  margin-right: 3vw;
-}
 .navbar {
   padding: 5vh 2vw;
   display: grid;
@@ -302,10 +294,6 @@ body {
 }
 .navbar__brand-name:hover {
   transform: scale(1.1) translate(2vw);
-}
-
-.navbar__links {
-  justify-self: right;
 }
 
 .navbar__link {
