@@ -253,7 +253,16 @@ const addBehaviourToPokeTiles = () => {
 
     let randomEntry = Math.floor(Math.random() * pokedexEntries.length);
 
-    floatingArea.innerHTML += `<div class="div--floating__intro"><p>${pokedexEntries[randomEntry].flavor_text}<p></div>`;
+    let pokeName = pokeInfo.name;
+
+    floatingArea.innerHTML += `
+    <div class="div--floating__intro">
+    <h3>${pokeName.charAt(0).toUpperCase() + pokeName.substring(1)}</h3>
+    <p><span class="div--floating__dex-entry-label">Pokedex Entry</span> <span class="div--floating__dex-entry">#${pokeIndex
+      .toString()
+      .padStart(3, "0")}</span></p>
+    <p>${pokedexEntries[randomEntry].flavor_text}<p>
+    </div>`;
 
     floatingArea.innerHTML += `
       <div class="div--floating__intro-stats">

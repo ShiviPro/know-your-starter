@@ -381,6 +381,15 @@ img.div--floating__img {
   height: auto;
 }
 
+.div--floating__dex-entry-label {
+  font-weight: bold;
+}
+
+.div--floating__dex-entry {
+  font-weight: bold;
+  opacity: 80%;
+}
+
 .div--floating__intro {
   margin: auto 0;
 }
