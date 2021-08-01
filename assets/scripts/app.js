@@ -1,27 +1,6 @@
 var pokemons_container = document.querySelector("#pokemons-container");
 
-const pokeTypeAccent = [
-  "bug",
-  "dark",
-  "dragon",
-  "electric",
-  "fairy",
-  "fighting",
-  "fire",
-  "flying",
-  "ghost",
-  "grass",
-  "ground",
-  "ice",
-  "normal",
-  "poison",
-  "psychic",
-  "rock",
-  "steel",
-  "water",
-];
-
-const pokeIndices = [
+const starterPokeIndices = [
   1, 4, 7, 152, 155, 158, 252, 255, 258, 387, 390, 393, 495, 498, 501, 650, 653,
   656, 722, 725, 728, 810, 813, 816, 25, 133,
 ];
@@ -29,32 +8,33 @@ const pokeIndices = [
 const pokeInfoUrl = "https://pokeapi.co/api/v2/pokemon";
 
 let currGen = 1;
-let isNextGen = true;
+let isNewGen = true;
 
-const pokeImgUrl = "./assets/images/starterMons/";
+const pokeImgUrl = "./assets/images/starterMons";
 
 let loading = document.createElement("div");
 loading.classList.add("loading");
 
-const fetchPokemons = async () => {
-  for (let pokeIndex = 0; pokeIndex < pokeIndices.length; pokeIndex++) {
+const fetchStarterMons = async () => {
+  for (let pokeIndex = 0; pokeIndex < starterPokeIndices.length; pokeIndex++) {
+    // Every Gen from 1 to 8 excluding the secondary 7th Gen contains exactly 3 starters.
     if (currGen <= 8 && pokeIndex % 3 == 0) {
-      isNextGen = true;
-    } else if (pokeIndex == 24) {
+      isNewGen = true;
+    }
+    // last 2 entries are made exclusively for Gen 1 remake done in Gen 7.
+    else if (pokeIndex == 24) {
       currGen = 7;
-      isNextGen = true;
+      isNewGen = true;
     }
     pokemons_container.appendChild(loading);
-    await getPokeInfo(pokeIndices[pokeIndex]);
+    await getPokeInfo(starterPokeIndices[pokeIndex]);
   }
 };
 
 const getPokeInfo = async (pokeIndex) => {
-  const pokeInfo = await fetch(
-    "https://pokeapi.co/api/v2/pokemon/" + pokeIndex
-  );
+  const pokeInfo = await fetch(pokeInfoUrl + "/" + pokeIndex);
   const pokeInfoJson = await pokeInfo.json();
-  await createPokeTile(pokeInfoJson);
+  createPokeTile(pokeInfoJson);
 };
 
 const createPokeTile = (pokeInfo) => {
@@ -62,11 +42,7 @@ const createPokeTile = (pokeInfo) => {
   let pokeName =
     pokeInfo.name.charAt(0).toUpperCase() + pokeInfo.name.substring(1);
 
-  let currReturnedTypes = pokeInfo.types.map((type) => type.type.name);
-
-  let pokeType = pokeTypeAccent.find(
-    (type) => currReturnedTypes.indexOf(type) > -1
-  );
+  let pokeType = pokeInfo.types[0].type.name;
 
   let accentClass = "bg-" + pokeType;
 
@@ -76,50 +52,52 @@ const createPokeTile = (pokeInfo) => {
   pokemonTile.id = "poke-tile";
   pokemonTile.setAttribute("data-poke-index", `${pokeInfo.id}`);
 
-  if (pokeInfo.id == 133 || pokeInfo.id >= 650) {
+  let pokeIndex = pokeInfo.id;
+  // 'mons after Gen 5 are all PNGs except Pikachu from Gen 7
+  if (pokeIndex == 133 || pokeIndex >= 650) {
     pokemonTile.innerHTML = `
-        <div class="poke-image-container" data-poke-index="${pokeInfo.id}">
-        <img class="poke-image" src="${pokeImgUrl}${pokeInfo.id}.png"  data-poke-index="${pokeInfo.id}"/>
+        <div class="poke-image-container" data-poke-index="${pokeIndex}">
+        <img class="poke-image" src="${pokeImgUrl}/${pokeIndex}.png"  data-poke-index="${pokeIndex}"/>
         </div>`;
-  } else {
+  }
+  // All other 'mons from Gen 1 to Gen 5 are still inline SVGs defined in 'index.html' .
+  else {
     pokemonTile.innerHTML = `
-        <div class="poke-image-container" data-poke-index="${pokeInfo.id}">
-        <svg class="poke-image" data-poke-index="${pokeInfo.id}">
-        <use xlink:href="#mon-${pokeInfo.id}-img">
+        <div class="poke-image-container" data-poke-index="${pokeIndex}">
+        <svg class="poke-image" data-poke-index="${pokeIndex}">
+        <use xlink:href="#mon-${pokeIndex}-img">
         </svg>
         </div>`;
   }
 
   pokemonTile.innerHTML += `
-      <div class="poke-info-container" data-poke-index="${pokeInfo.id}">
-      <h3 class="poke-index" data-poke-index="${pokeInfo.id}">#${pokeInfo.id
+      <div class="poke-info-container" data-poke-index="${pokeIndex}">
+      <h3 class="poke-index" data-poke-index="${pokeIndex}">#${pokeIndex
     .toString()
     .padStart(3, "0")}</h3>
-        <h3 class="poke-name" data-poke-index="${pokeInfo.id}">${pokeName}</h3>
+        <h3 class="poke-name" data-poke-index="${pokeIndex}">${pokeName}</h3>
         </div>
         `;
 
-  if (isNextGen) {
+  if (isNewGen) {
     let genInfo = document.createElement("div");
     genInfo.innerHTML = `<span class="gen-info">Generation ${currGen}<span>`;
     pokemons_container.appendChild(genInfo);
     currGen += 1;
-    isNextGen = false;
+    isNewGen = false;
   }
 
+  loading.remove();
   pokemons_container.appendChild(pokemonTile);
+
   let pokeInfoContainer = document.querySelector(
     ".poke-tile:last-child .poke-info-container"
   );
 
   for (let type = 0; type < pokeInfo.types.length; type++) {
-    pokeInfoContainer.innerHTML += `<h3><span class="poke-type bg-${
-      pokeInfo.types[type].type.name
-    }-dark col-white">${pokeInfo.types[
-      type
-    ].type.name.toUpperCase()}</span></h3>`;
+    let pokeTypeName = pokeInfo.types[type].type.name;
+    pokeInfoContainer.innerHTML += `<h3><span class="poke-type bg-${pokeTypeName}-dark col-white">${pokeTypeName.toUpperCase()}</span></h3>`;
   }
-  loading.remove();
 
   pokemons_container.appendChild(pokemonTile);
 };
@@ -157,10 +135,10 @@ const addFocusOnHoveredPokeTile = () => {
 };
 
 const runMain = async () => {
-  await fetchPokemons();
-  let lastUserLocOnYAxis = undefined;
+  await fetchStarterMons();
   addFocusOnHoveredPokeTile();
-  await addBehaviourToPokeTiles();
+  let lastUserLocOnYAxis = undefined;
+  addBehaviourToPokeTiles();
 };
 
 runMain();
@@ -178,7 +156,7 @@ const addBehaviourToPokeTiles = () => {
     floatingArea.classList.add("div--floating");
     floatingArea.setAttribute("id", "div--floating");
 
-    loading.classList.add("comeInCenter");
+    loading.classList.add("recenter");
     event.target.appendChild(loading);
 
     let pokeInfo = await fetch(
@@ -201,6 +179,7 @@ const addBehaviourToPokeTiles = () => {
       let wtInKG = wtInHG / 10;
       return wtInKG + "  kg";
     };
+
     let pokeHeight = evaluatePokeHeight(await pokeInfo.height);
     let pokeWeight = evaluatePokeWeight(await pokeInfo.weight);
     let abilities = await pokeInfo.abilities;
@@ -209,6 +188,7 @@ const addBehaviourToPokeTiles = () => {
       let abilityEl = abilities[abilityIdx];
       let abilityInfoFetch = await fetch(abilityEl.ability.url);
       abilityInfoFetch = await abilityInfoFetch.json();
+      // Some Gen 8 abilities have a different JSON structure than others from previous gens.
       if (abilityEl.ability.name === "libero") {
         for (
           let i = 0;
@@ -244,23 +224,23 @@ const addBehaviourToPokeTiles = () => {
     }
 
     let pokeStats = await pokeInfo.stats;
-    if (pokeInfo.id == 133 || pokeInfo.id >= 650) {
+    let pokeIndex = pokeInfo.id;
+    if (pokeIndex == 133 || pokeIndex >= 650) {
       floatingArea.innerHTML = `
         <div class="poke-image-container">
-          <img class="div--floating__img" src="${pokeImgUrl}${event.target.dataset.pokeIndex}.png"/>
+          <img class="div--floating__img" src="${pokeImgUrl}/${pokeIndex}.png"/>
         </div>`;
     } else {
       floatingArea.innerHTML = `
         <div class="poke-image-container">
           <svg class="div--floating__img">
-            <use xlink:href="#mon-${event.target.dataset.pokeIndex}-img">
+            <use xlink:href="#mon-${pokeIndex}-img">
           </svg>
         </div>`;
     }
 
     let pokeIntroData = await fetch(
-      "https://pokeapi.co/api/v2/pokemon-species/" +
-        event.target.dataset.pokeIndex
+      "https://pokeapi.co/api/v2/pokemon-species/" + pokeIndex
     );
 
     pokeIntroData = await pokeIntroData.json();
@@ -291,9 +271,9 @@ const addBehaviourToPokeTiles = () => {
       <p class="poke-stats">Speed: ${pokeStats[5].base_stat}</p>
     </div>
     `;
-    loading.classList.remove("comeInCenter");
-    loading.remove();
 
+    loading.classList.remove("recenter");
+    loading.remove();
     document.body.appendChild(floatingArea);
 
     floatingArea.innerHTML += `<div class="div--floating__type-label"><h3>Type: </h3></div>`;
@@ -315,6 +295,9 @@ const addBehaviourToPokeTiles = () => {
       .querySelector("#div--floating__types")
       .appendChild(floatingAreaTypes);
 
+    // In order to avoid complexity to the user, the type relations only pertain to the primary type of the starter.
+    //  Also the starter 'mons are specialised in their own type &
+    //  their final stage evolutions are very strong contenders in that primary typing.
     let pokeTypeRelations = await fetch(
       "https://pokeapi.co/api/v2/type/" + pokeInfo.types[0].type.name
     );
@@ -458,6 +441,7 @@ const addBehaviourToPokeTiles = () => {
 
     lastUserLocOnYAxis = window.pageYOffset;
 
+    // the div--floating element lies 450px on y-axis of the document.
     window.scrollTo(0, 450);
 
     let closeBtn = document.createElement("div");
@@ -481,25 +465,27 @@ const addBehaviourToPokeTiles = () => {
     const addBehaviourToPokeAbilities = () => {
       let pokeAbilities = document.querySelectorAll(".poke-ability");
       pokeAbilities.forEach((pokeAbility, pokeAbilityIndex) => {
-        let defaultLeftArrowShift = 260;
+        let defaultArrowLeftShift = 260;
         pokeAbility.addEventListener("mouseover", (event) => {
           let abilityInfoTooltip = document.createElement("div");
           abilityInfoTooltip.classList.add("ability-tooltip");
           abilityInfoTooltip.innerHTML = `<p class="div--floating__ability-info">${event.target.dataset.abilityInfo}</p>`;
 
           floatingArea.appendChild(abilityInfoTooltip);
-
+          // Shifting the tooltip arrow to the ability which it targets.
           if (pokeAbilityIndex != 0)
             abilityInfoTooltip.style.setProperty(
               "--left-val",
-              defaultLeftArrowShift * pokeAbilityIndex + "px"
+              defaultArrowLeftShift * pokeAbilityIndex + "px"
             );
         });
+
         pokeAbility.addEventListener("mouseout", (event) => {
           floatingArea.lastChild.remove();
         });
       });
     };
+
     addBehaviourToPokeAbilities();
   };
   pokeTiles.forEach((pokeTile) => {

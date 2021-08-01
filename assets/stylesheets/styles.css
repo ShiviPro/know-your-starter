@@ -106,7 +106,7 @@ body {
   animation: spin 1.5s linear infinite;
 }
 
-.comeInCenter {
+.recenter {
   position: relative;
   bottom: 50px;
   left: 10px;
@@ -431,7 +431,7 @@ img.div--floating__img {
 .div--floating__ability-info {
   background-color: var(--off-white);
   position: absolute;
-  top: 455px;
+  top: 555px;
   left: 10px;
   z-index: 1;
   max-width: 40%;
