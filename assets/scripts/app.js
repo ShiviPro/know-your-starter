@@ -98,8 +98,6 @@ const createPokeTile = (pokeInfo) => {
     let pokeTypeName = pokeInfo.types[type].type.name;
     pokeInfoContainer.innerHTML += `<h3><span class="poke-type bg-${pokeTypeName}-dark col-white">${pokeTypeName.toUpperCase()}</span></h3>`;
   }
-
-  pokemons_container.appendChild(pokemonTile);
 };
 
 const addFocusOnHoveredPokeTile = () => {
