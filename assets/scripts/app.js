@@ -285,10 +285,9 @@ const addBehaviourToPokeTiles = () => {
 
     floatingArea.innerHTML += `<div class="div--floating__type-label"><h3>Type: </h3></div>`;
     let pokeTypes = pokeInfo.types;
-    floatingArea.innerHTML += `<div class="div--floating__types" id="div--floating__types"></div>`;
 
     let floatingAreaTypes = document.createElement("div");
-    floatingAreaTypes.classList.add("div--floating-types");
+    floatingAreaTypes.classList.add("div--floating__types");
     for (let type = 0; type < pokeTypes.length; type++) {
       floatingAreaTypes.innerHTML += `<span class="poke-type bg-${
         pokeTypes[type].type.name
@@ -298,9 +297,7 @@ const addBehaviourToPokeTiles = () => {
       }
     }
 
-    document
-      .querySelector("#div--floating__types")
-      .appendChild(floatingAreaTypes);
+    floatingArea.appendChild(floatingAreaTypes);
 
     // In order to avoid complexity to the user, the type relations only pertain to the primary type of the starter.
     //  Also the starter 'mons are specialised in their own type &
